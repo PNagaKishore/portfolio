@@ -239,3 +239,129 @@ if (carouselCards.length > 0) {
     }, { passive: true });
   }
 }
+
+// ─── THEME TOGGLE ───
+const themeToggle = document.getElementById('theme-toggle');
+
+const getPreferredTheme = () => {
+  const storedTheme = localStorage.getItem('theme');
+  if (storedTheme) {
+    return storedTheme;
+  }
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+};
+
+const setTheme = (theme) => {
+  if (theme === 'light') {
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  localStorage.setItem('theme', theme);
+};
+
+// Initialize theme on load
+setTheme(getPreferredTheme());
+
+themeToggle?.addEventListener('click', () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  setTheme(newTheme);
+});
+
+// ─── DYNAMIC WORK EXPERIENCE ───
+const workexNumberEl = document.getElementById('workex-number');
+if (workexNumberEl) {
+  // Baseline: 2.8 years (32 months) as of May 2026 (current time in environment)
+  // If you are deploying this and your current real-world date is different, 
+  // you can change baseYear and baseMonth to the month you had exactly 2.8 years of experience.
+  const baseYear = 2026;
+  const baseMonth = 4; // May (0-indexed)
+  const baseTotalMonths = 32; // 2 years and 8 months
+  
+  const currentDate = new Date();
+  
+  let monthDiff = (currentDate.getFullYear() - baseYear) * 12 + (currentDate.getMonth() - baseMonth);
+  
+  // Prevent going backwards if testing in the past
+  if (monthDiff < 0) monthDiff = 0;
+  
+  const totalMonths = baseTotalMonths + monthDiff;
+  
+  // Calculate years and remaining months
+  const years = Math.floor(totalMonths / 12);
+  const remainingMonths = totalMonths % 12;
+  
+  workexNumberEl.textContent = remainingMonths === 0 ? `${years}` : `${years}.${remainingMonths}`;
+}
+
+// ─── DYNAMIC AGE ───
+const ageNumberEl = document.getElementById('age-number');
+if (ageNumberEl) {
+  // DOB: 10/11/1999 (November 10, 1999)
+  const dob = new Date(1999, 10, 10);
+  const currentDate = new Date();
+  
+  let monthDiff = (currentDate.getFullYear() - dob.getFullYear()) * 12 + (currentDate.getMonth() - dob.getMonth());
+  
+  // Adjust if the current day of the month is before the birth day
+  if (currentDate.getDate() < dob.getDate()) {
+    monthDiff--;
+  }
+  
+  const years = Math.floor(monthDiff / 12);
+  const remainingMonths = monthDiff % 12;
+  
+  ageNumberEl.textContent = remainingMonths === 0 ? `${years}` : `${years}.${remainingMonths}`;
+}
+
+// ─── EXPERIENCE MODAL ───
+const experienceModal = document.getElementById('experience-modal');
+const modalCloseBtn = document.getElementById('modal-close-btn');
+const modalContentArea = document.getElementById('modal-content-area');
+const timelineCards = document.querySelectorAll('.timeline-card:not(.leadership-card)');
+
+if (experienceModal && timelineCards.length > 0) {
+  timelineCards.forEach(card => {
+    card.addEventListener('click', () => {
+      // Clear previous content
+      modalContentArea.innerHTML = '';
+      
+      // Clone children of the clicked card (except click hint)
+      Array.from(card.children).forEach(child => {
+        if (!child.classList.contains('click-hint')) {
+          modalContentArea.appendChild(child.cloneNode(true));
+        }
+      });
+      
+      // Re-initialize lucide icons for the cloned content
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons({ root: modalContentArea });
+      }
+      
+      experienceModal.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+  });
+  
+  const closeModal = () => {
+    experienceModal.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+  };
+  
+  modalCloseBtn?.addEventListener('click', closeModal);
+  
+  // Close when clicking outside the modal container
+  experienceModal.addEventListener('click', (e) => {
+    if (e.target === experienceModal) {
+      closeModal();
+    }
+  });
+  
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && experienceModal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+}

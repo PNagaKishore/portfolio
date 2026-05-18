@@ -611,6 +611,7 @@ section {
 }
 
 .about-content {
+  min-width: 0;
   opacity: 0;
   transform: translateX(30px);
   transition: var(--transition);
@@ -636,30 +637,45 @@ section {
   font-size: 0.95rem;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
+/* ─── ABOUT LOGOS MARQUEE ─── */
+.about-logos-marquee {
   margin-top: 2rem;
-}
-
-.info-item {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+  padding: 1rem 0;
 }
 
-.info-label {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.72rem;
-  color: var(--gold);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+.about-logos-marquee:hover .marquee-content {
+  animation-play-state: paused;
 }
 
-.info-value {
-  font-size: 0.88rem;
-  color: var(--text-primary);
+.marquee-content {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: space-around;
+  min-width: 100%;
+  gap: 3rem;
+  padding: 0 1.5rem;
+  animation: scrollMarquee 20s linear infinite;
+}
+
+.marquee-logo {
+  height: 45px; /* Professional uniform sizing */
+  width: auto;
+  transition: transform 0.3s ease;
+  object-fit: contain;
+}
+
+.marquee-logo:hover {
+  transform: scale(1.1);
+}
+
+@keyframes scrollMarquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-100%); }
 }
 
 /* ─── EXPERIENCE ─── */
@@ -1701,4 +1717,250 @@ footer {
 
 .hamburger.open span:nth-child(3) {
   transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ─── THEME TOGGLE & LIGHT THEME ─── */
+.nav-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.theme-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(201, 168, 76, 0.1);
+  color: var(--gold);
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.theme-toggle:hover {
+  background: rgba(201, 168, 76, 0.2);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+
+.theme-toggle .sun-icon {
+  display: none;
+}
+
+[data-theme="light"] .theme-toggle .sun-icon {
+  display: block;
+}
+
+[data-theme="light"] .theme-toggle .moon-icon {
+  display: none;
+}
+
+[data-theme="light"] {
+  --navy: #f8f5f0;
+  --navy-mid: #efebe1;
+  --navy-light: #e6e0d3;
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --slate: #475569;
+  --slate-light: #1e293b;
+  --card-bg: rgba(255, 255, 255, 0.85);
+  --border: rgba(201, 168, 76, 0.5);
+  --white: #0a1628;
+  --accent-teal: #006b5f;
+}
+
+[data-theme="light"] body {
+  background: linear-gradient(135deg, #FAF7F2 0%, #E8DFCE 100%);
+}
+
+[data-theme="light"] #navbar.scrolled {
+  background: rgba(250, 247, 242, 0.95);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] #about,
+[data-theme="light"] #projects {
+  background: rgba(235, 227, 213, 0.4);
+}
+
+[data-theme="light"] .timeline-dot {
+  border-color: #FAF7F2;
+}
+
+[data-theme="light"] .timeline-card,
+[data-theme="light"] .project-card,
+[data-theme="light"] .skills-group,
+[data-theme="light"] .edu-card {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="light"] .timeline-card:hover,
+[data-theme="light"] .project-card:hover,
+[data-theme="light"] .edu-card:hover {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="light"] .skill-item {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .skill-item:hover {
+  background: rgba(201, 168, 76, 0.1);
+  border-color: rgba(201, 168, 76, 0.4);
+}
+
+[data-theme="light"] .achievement-pill {
+  background: rgba(0, 107, 95, 0.08);
+  border: 1px solid rgba(0, 107, 95, 0.2);
+}
+
+[data-theme="light"] .project-tag {
+  background: rgba(201, 168, 76, 0.15);
+  color: #1e293b;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+}
+
+@media (max-width: 768px) {
+  .nav-controls {
+    gap: 1rem;
+  }
+}
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 22, 40, 0.85);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-container {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 2.5rem;
+  transform: translateY(30px) scale(0.95);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.modal-overlay.active .modal-container {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: transparent;
+  border: none;
+  color: var(--slate);
+  cursor: pointer;
+  transition: color 0.3s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.modal-close:hover {
+  color: var(--gold);
+}
+
+/* Modal Content adjustments */
+.modal-content .timeline-date {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+.modal-content .timeline-role {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+.modal-content .timeline-company {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+.modal-content .timeline-points {
+  margin-bottom: 2rem;
+}
+.modal-content .timeline-points li {
+  font-size: 1.05rem;
+  padding: 0.6rem 0 0.6rem 1.5rem;
+  line-height: 1.7;
+}
+.modal-content .timeline-achievements {
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Timeline Cards Clickable Hint */
+.timeline-card {
+  cursor: pointer;
+  position: relative;
+}
+
+/* Hide the details in the main timeline view to make it a summary */
+.timeline-card .timeline-points,
+.timeline-card .timeline-achievements {
+  display: none;
+}
+
+/* Overrides for Leadership Cards (which use timeline-card base styles but shouldn't be hidden/clickable) */
+.leadership-card {
+  cursor: default !important;
+}
+.leadership-card .timeline-points,
+.leadership-card .timeline-achievements {
+  display: block !important;
+}
+.leadership-card .timeline-achievements {
+  display: flex !important;
+}
+
+.click-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--gold);
+  margin-top: 1.5rem;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  font-family: 'DM Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.timeline-card:hover .click-hint {
+  opacity: 1;
+}
+
+[data-theme="light"] .modal-overlay {
+  background: rgba(250, 247, 240, 0.85);
+}
+[data-theme="light"] .modal-container {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
